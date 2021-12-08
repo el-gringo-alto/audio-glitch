@@ -1,4 +1,5 @@
 imgs/
+*.jpg
 
 .DS_Store
 ._DS_Store
