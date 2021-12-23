@@ -1,5 +1,9 @@
 imgs/
 *.jpg
+*.tiff
+*.bmp
+
+test.py
 
 .DS_Store
 ._DS_Store
