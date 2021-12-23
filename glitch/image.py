@@ -16,34 +16,22 @@ class Image():
         g_ext: extension of the glitch file. Default is tiff
     '''
 
-    def __init__(self, in_file, output=None, g_ext='tiff'):
+    def __init__(self, in_file):
         self.in_file = Path(in_file)
-        self.g_ext = g_ext
-        self.tempdir = Path(tempfile.mkdtemp())
-        if output:
-            self.output = Path(output)
-        else:
-            self.output = Path(f"{self.in_file.stem}_glitch.{self.g_ext}")
-
-        pre_glitch = self.tempdir / f"pre_glitch.{self.g_ext}"
-        with Im.open(self.in_file) as img:
-            img.save(pre_glitch)
-
-        self.cmd = ['sox', '-t', 'ul', '-c', '1', '-r', '96k',
-                    str(pre_glitch), '-t', 'ul', str(self.output),
-                    'trim', '0', '200s', ':']
+        self.effects = []
 
     def contrast(self, enhancement_amount):
         ''' Comparable with compression, this effect modifies an audio signal
             to make it sound louder. enhancement-amount controls the amount of
             the enhancement and is a number in the range 0−100. Note that
             enhancement-amount = 0 still gives a significant contrast enhancement. '''
+
         if enhancement_amount < 0:
             enhancement_amount = 0
         elif enhancement_amount > 100:
             enhancement_amount = 100
 
-        self.cmd += ['contrast', str(enhancement_amount)]
+        self.effects += ['contrast', str(enhancement_amount)]
 
     def echo(self):
         pass
@@ -57,10 +45,23 @@ class Image():
     def phaser(self):
         pass
 
-    def run(self):
+    def build(self, output=None, g_ext='tiff'):
         ''' Run the command and close the temporary directory '''
-        subprocess.run(self.cmd, check=True)
-        print(f"Image created @ {self.output}")
 
-        if self.tempdir.exists():
-            shutil.rmtree(self.tempdir)
+        if output:
+            output = Path(output)
+        else:
+            output = Path(f"{self.in_file.stem}_glitch.{g_ext}")
+
+        with tempfile.TemporaryDirectory() as tempdir:
+            tempdir = Path(tempdir)
+            pre_glitch = tempdir / f"pre_glitch.{g_ext}"
+            with Im.open(self.in_file) as img:
+                img.save(pre_glitch)
+
+            cmd = ['sox', '-t', 'ul', '-c', '1', '-r', '96k',
+                   str(pre_glitch), '-t', 'ul', str(output), 'trim', '0',
+                   '200s', ':'] + self.effects
+
+            subprocess.run(cmd, check=True)
+        print(f"Image created @ {output}")

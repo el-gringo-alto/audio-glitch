@@ -59,4 +59,5 @@ To add more resources to the list or report a link in this list, please mention 
     * [ ] tremolo
     * [ ] upsample
 * [ ] Allow effects to work on portions of the media
-* [ ] Add video support
+* [ ] Video support
+* [ ] Argument parsing
