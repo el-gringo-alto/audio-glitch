@@ -5,7 +5,9 @@ Generate glitch art with audio effects through the command line. Inspired by the
 
 ## Installation
 
-Requires [Sox](http://sox.sourceforge.net/). Python dependencies can be installed by running `pip install -r requirements.txt`.
+Requires [Sox](http://sox.sourceforge.net/).
+
+Python dependencies can be installed by running `pip install -r requirements.txt`.
 
 
 ## Glitch Art Resources
